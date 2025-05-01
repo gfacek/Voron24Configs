@@ -1,0 +1,328 @@
+[include fluidd.cfg]
+[virtual_sdcard]
+path: /home/gfacek/printer_data/gcodes
+on_error_gcode: CANCEL_PRINT
+
+[include mainsail.cfg]
+#[include stealthburner_leds.cfg]
+[include caselight_leds.cfg]
+#[include BTT_EBB_SB2209.cfg]
+#[include cartographer.cfg]
+#[include KAMP_Settings.cfg]
+[include Macros/*.cfg]
+[include config_backup.cfg]
+
+#####################################################################
+#   UUID Setting
+#####################################################################
+[mcu]
+canbus_uuid: 40c5e4042ebc
+
+[printer]
+kinematics: corexy
+max_velocity: 500  
+max_accel: 15000    			
+max_z_velocity: 150 			
+max_z_accel: 2100
+square_corner_velocity: 5.0
+
+
+#####################################################################
+#   Toolchanger Setting
+#####################################################################
+
+[rounded_path]
+resolution: 0.2 # the length of a circle approximation segments.
+replace_g0: False # Use at your own risk
+
+[respond]
+default_type: echo
+
+[force_move]
+enable_force_move: True
+
+[input_shaper]
+
+# change T0 in the accel_chip to the tool you are currently running the tests on
+[resonance_tester]
+accel_chip: adxl345 T0
+probe_points:
+    175, 175, 20
+
+# Include whatever you called the configs for each of your tools.
+[include Toolheads/*.cfg]
+
+#####################################################################
+# 	X/Y Stepper Settings
+#####################################################################
+
+## X Stepper on Motor1(B Motor)
+[stepper_x]
+step_pin: PE6
+dir_pin: PE5
+enable_pin: !PC14
+microsteps: 64
+rotation_distance: 40
+full_steps_per_rotation:400
+endstop_pin: tmc2209_stepper_x:virtual_endstop
+position_min: 0
+position_endstop: 350
+position_max: 350
+homing_speed: 20   #Max 100
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_x]
+uart_pin: PC13
+interpolate: False
+run_current: 1.2
+sense_resistor: 0.110
+stealthchop_threshold: 0
+diag_pin: ^PF4
+driver_SGTHRS: 93
+
+
+
+## Y Stepper on Motor2 (A Motor)
+[stepper_y]
+step_pin: PE2
+dir_pin: PE1
+enable_pin: !PE4
+microsteps: 64
+rotation_distance: 40
+full_steps_per_rotation:400
+endstop_pin: ^PF3
+position_min: 0
+position_endstop: 350
+position_max: 350
+homing_speed: 100  #Max 100
+homing_retract_dist: 5
+homing_positive_dir: true
+
+[tmc2209 stepper_y]
+uart_pin: PE3
+interpolate: False
+run_current: 1.2
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+[input_shaper]
+shaper_freq_x: 53.0
+shaper_type_x: zv
+shaper_freq_y: 37.8
+shaper_type_y: zv
+
+#####################################################################
+# 	Z Stepper Settings
+#####################################################################
+
+## Z0 Stepper - Front Left on MOTOR3
+[stepper_z]
+step_pin: PB8
+dir_pin: PB7
+enable_pin: !PE0
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 16
+endstop_pin: probe:z_virtual_endstop
+position_max: 300
+
+##--------------------------------------------------------------------
+position_min: -5
+homing_speed: 8
+second_homing_speed: 3
+homing_retract_dist: 0
+
+[tmc2209 stepper_z]
+uart_pin: PB9
+interpolate: True
+run_current: 1.0
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+
+##	Z1 Stepper - Rear Left on Motor5
+[stepper_z1]
+step_pin: PG13
+dir_pin: !PG12
+enable_pin: !PG15
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 16
+
+[tmc2209 stepper_z1]
+uart_pin: PG14
+interpolate: True
+run_current: 1.0
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+
+##	Z2 Stepper - Rear Right on Motor6
+[stepper_z2]
+step_pin: PG9
+dir_pin: PD7
+enable_pin: !PG11
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 16
+
+[tmc2209 stepper_z2]
+uart_pin: PG10
+interpolate: True
+run_current: 1.0
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+##	Z3 Stepper - Front Right on Motor7
+[stepper_z3]
+step_pin: PD4
+dir_pin: !PD3
+enable_pin: !PD6
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 16
+
+[tmc2209 stepper_z3]
+uart_pin: PD5
+interpolate: True
+run_current: 1.0
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+[heater_bed]
+heater_pin: PA1
+sensor_type: Generic 3950
+sensor_pin: PB1
+max_power: 1.0
+min_temp: 0
+max_temp: 120
+#control: pid
+#pid_kp: 58.437
+#pid_ki: 2.347
+#pid_kd: 363.769
+
+#[temperature_sensor buildplate]
+#sensor_type: Generic 3950
+#sensor_pin: PB0
+#min_temp: -40
+#max_temp: 120
+
+#[temperature_sensor chamber]
+#sensor_type: Generic 3950
+#sensor_pin: PC5
+#min_temp: -40
+#max_temp: 100
+
+#[temperature_sensor EBB_NTC]
+#sensor_type: Generic 3950
+#sensor_pin: EBBCan: PA2
+#min_temp: -40
+#max_temp: 100
+
+[temperature_sensor RPi]
+sensor_type: temperature_host
+
+
+#[safe_z_home]
+#home_xy_position:175,175
+#speed:100
+#z_hop:10
+
+
+[multi_pin controller_fans]
+pins: PF7,PF9
+
+[controller_fan controller_fan]
+#  Controller fan
+pin: multi_pin:controller_fans
+max_power: 0.8
+kick_start_time: 0.5
+heater: heater_bed
+
+
+
+[heater_fan nevermore_fan]
+#  Exhaust fan - Nevermore Filter
+pin: PF6
+max_power: 1.0
+shutdown_speed: 0.0
+kick_start_time: 5.0
+heater: heater_bed
+heater_temp: 60
+fan_speed: 1 
+
+
+
+[quad_gantry_level]
+gantry_corners:
+	-60,-10
+	410,420
+points:
+	50,25
+	50,275
+	300,275
+	300,25
+
+#--------------------------------------------------------------------
+speed: 100
+horizontal_move_z: 5
+retries: 5
+retry_tolerance: 0.0075
+max_adjust: 10
+
+[bed_mesh]
+speed: 200
+horizontal_move_z: 5
+mesh_min: 50,25
+mesh_max: 300,275
+probe_count: 18,18
+algorithm: bicubic
+bicubic_tension: 0.2
+zero_reference_position: 175, 175 # center of your bed
+
+
+
+[board_pins]
+aliases:
+    # EXP1 header
+    EXP1_1=PE7, EXP1_2=PG1,
+    EXP1_3=PG0, EXP1_4=PF15,
+    EXP1_5=PF14, EXP1_6=PF13,    # Slot in the socket on this side
+    EXP1_7=PF12, EXP1_8=PF11,
+    EXP1_9=<GND>, EXP1_10=<5V>,
+
+    # EXP2 header
+    EXP2_1=PE13, EXP2_2=PE12,
+    EXP2_3=PE15, EXP2_4=PE11,
+    EXP2_5=PE10, EXP2_6=PE14,      # Slot in the socket on this side
+    EXP2_7=PE8, EXP2_8=<RST>,
+    EXP2_9=<GND>, EXP2_10=<NC>
+
+# Enable object exclusion
+[exclude_object]
+
+# Enable arcs support
+[gcode_arcs]
+resolution: 0.3
+
+
+#####################################################################
+#   Macros
+#####################################################################
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+#*# [heater_bed]
+#*# control = pid
+#*# pid_kp = 52.025
+#*# pid_ki = 2.195
+#*# pid_kd = 308.246
+#*#
+#*# [extruder]
+#*#
+

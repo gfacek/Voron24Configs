@@ -46,3 +46,23 @@ origin = https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
 managed_services = klipper
 primary_branch = main
 
+[update_manager klipper-toolchanger]
+type = git_repo
+channel = dev
+path = ~/klipper-toolchanger
+origin = https://github.com/viesturz/klipper-toolchanger.git
+managed_services = klipper
+primary_branch = main
+
+[simplyprint]
+
+[update_manager moonraker-obico]
+type = git_repo
+path = /home/gfacek/moonraker-obico
+origin = https://github.com/TheSpaghettiDetective/moonraker-obico.git
+env = /home/gfacek/moonraker-obico/../moonraker-obico-env/bin/python
+requirements = requirements.txt
+install_script = install.sh
+managed_services = 
+	moonraker-obico
+
